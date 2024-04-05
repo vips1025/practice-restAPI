@@ -1,66 +1,52 @@
 package shop.mtcoding.blog.user;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import shop.mtcoding.blog._core.errors.exception.Exception400;
-import shop.mtcoding.blog._core.errors.exception.Exception401;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import shop.mtcoding.blog._core.utils.ApiUtil;
 
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class UserController {
 
     private final UserService userService;
     private final HttpSession session;
 
-    @GetMapping("/user/update-form")
-    public String updateForm(HttpServletRequest request) {
-        User sessionUser = (User) session.getAttribute("sessionUser");
-        User user = userService.회원조회(sessionUser.getId());
-        request.setAttribute("user", user);
-        return "user/update-form";
+    // TODO: 회원정보 조회 API 필요 -> @GetMapping("/api/users/{id}")
+    @GetMapping("/users/{id}")
+    public ResponseEntity<?> userinfo(@PathVariable Integer id) {
+        UserResponse.DTO respDTO = userService.회원조회(id);
+        return ResponseEntity.ok(new ApiUtil(respDTO));
     }
 
-    @PostMapping("/user/update")
-    public String update(UserRequest.UpdateDTO reqDTO) {
+    @PutMapping("/api/users/{id}")
+    public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody UserRequest.UpdateDTO reqDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         User newSessionUser = userService.회원수정(sessionUser.getId(), reqDTO);
         session.setAttribute("sessionUser", newSessionUser);
-        return "redirect:/";
+
+        UserResponse.DTO respDTO = new UserResponse.DTO(sessionUser);
+        return ResponseEntity.ok(new ApiUtil(respDTO));
     }
 
     @PostMapping("/join")
-    public String join(UserRequest.JoinDTO reqDTO) {
-        userService.회원가입(reqDTO);
-        return "redirect:/";
+    public ResponseEntity<?> join(@RequestBody UserRequest.JoinDTO reqDTO) {
+        User user = userService.회원가입(reqDTO);
+        return ResponseEntity.ok(new ApiUtil(user));
     }
 
     @PostMapping("/login")
-    public String login(UserRequest.LoginDTO reqDTO) {
+    public ResponseEntity<?> login(@RequestBody UserRequest.LoginDTO reqDTO) {
         User sessionUser = userService.로그인(reqDTO);
         session.setAttribute("sessionUser", sessionUser);
-        return "redirect:/";
-    }
-
-    @GetMapping("/join-form")
-    public String joinForm() {
-        return "user/join-form";
-    }
-
-    @GetMapping("/login-form")
-    public String loginForm() {
-        return "user/login-form";
+        return ResponseEntity.ok(new ApiUtil(null));
     }
 
     @GetMapping("/logout")
-    public String logout() {
+    public ResponseEntity<?> logout() {
         session.invalidate();
-        return "redirect:/";
+        return ResponseEntity.ok(new ApiUtil(null));
     }
 }

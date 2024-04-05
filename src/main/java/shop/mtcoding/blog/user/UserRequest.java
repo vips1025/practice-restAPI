@@ -16,7 +16,7 @@ public class UserRequest {
         private String password;
         private String email;
 
-        public User toEntity(){
+        public User toEntity() {
             return User.builder()
                     .username(username)
                     .password(password)
