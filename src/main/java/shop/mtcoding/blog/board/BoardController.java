@@ -1,6 +1,7 @@
 package shop.mtcoding.blog.board;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class BoardController {
     }
 
     @PostMapping("/api/boards")
-    public ResponseEntity<?> save(@RequestBody BoardRequest.SaveDTO reqDTO) {
+    public ResponseEntity<?> save(@Valid @RequestBody BoardRequest.SaveDTO reqDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
         BoardResponse.DTO respDTO = boardService.글쓰기(reqDTO, sessionUser);
         return ResponseEntity.ok(new ApiUtil(respDTO));

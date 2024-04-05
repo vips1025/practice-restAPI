@@ -15,7 +15,7 @@ public class UserController {
     private final HttpSession session;
 
     // TODO: 회원정보 조회 API 필요 -> @GetMapping("/api/users/{id}")
-    @GetMapping("/users/{id}")
+    @GetMapping("/api/users/{id}")
     public ResponseEntity<?> userinfo(@PathVariable Integer id) {
         UserResponse.DTO respDTO = userService.회원조회(id);
         return ResponseEntity.ok(new ApiUtil(respDTO));
