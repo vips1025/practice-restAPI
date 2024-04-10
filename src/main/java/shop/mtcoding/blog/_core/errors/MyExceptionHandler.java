@@ -2,13 +2,12 @@ package shop.mtcoding.blog._core.errors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.mtcoding.blog._core.errors.exception.*;
 import shop.mtcoding.blog._core.utils.ApiUtil;
 
-// RuntimeException이 터지면 해당 파일로 오류가 모인다
-@ControllerAdvice
+@RestControllerAdvice // 데이터 응답
 public class MyExceptionHandler {
     @ExceptionHandler(Exception400.class)
     public ResponseEntity<?> ex400(Exception400 e) {

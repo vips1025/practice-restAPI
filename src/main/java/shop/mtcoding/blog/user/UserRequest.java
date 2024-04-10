@@ -30,7 +30,11 @@ public class UserRequest {
         private String email;
 
         public User toEntity() {
-            return User.builder().username(username).password(password).email(email).build();
+            return User.builder()
+                    .username(username)
+                    .password(password)
+                    .email(email)
+                    .build();
         }
     }
 

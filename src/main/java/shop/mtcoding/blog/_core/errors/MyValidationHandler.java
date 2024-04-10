@@ -15,23 +15,17 @@ public class MyValidationHandler {
     @Before("@annotation(org.springframework.web.bind.annotation.PostMapping) || @annotation(org.springframework.web.bind.annotation.PutMapping)")
     public void hello(JoinPoint jp) {
         Object[] args = jp.getArgs();
-        System.out.println("크기 : " + args.length);
 
         for (Object arg : args) {
-
             if (arg instanceof Errors) {
                 Errors errors = (Errors) arg;
 
                 if (errors.hasErrors()) {
                     for (FieldError error : errors.getFieldErrors()) {
-                        System.out.println(error.getField());
-                        System.out.println(error.getDefaultMessage());
-
                         throw new Exception400(error.getDefaultMessage() + " : " + error.getField());
                     }
                 }
             }
         }
-        System.out.println("MyValidationHandler : ********** hello **********");
     }
 }
